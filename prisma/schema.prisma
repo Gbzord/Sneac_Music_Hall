@@ -1,0 +1,40 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url    = "file:./dev.db"
+}
+
+model Usuario {
+  id      Int     @id @default(autoincrement())
+  nome    String
+  email   String  @unique
+  senha   String
+  isAdmin  Boolean @default(false)
+  funcao  String  @default("vendedor")// <-- "adm", "validador", "vendedor"
+}
+
+model Evento {
+  id        Int      @id @default(autoincrement())
+  nome      String
+  data      DateTime
+  setores   Setor[]
+}
+
+model Setor {
+  id        Int      @id @default(autoincrement())
+  nome      String
+  eventoId  Int
+  lugares   Lugar[]
+  Evento    Evento   @relation(fields: [eventoId], references: [id])
+}
+
+model Lugar {
+  id        Int      @id @default(autoincrement())
+  numero    String
+  disponivel Boolean @default(true)
+  setorId   Int
+  Setor     Setor    @relation(fields: [setorId], references: [id])
+}
